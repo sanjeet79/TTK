@@ -213,6 +213,38 @@
         @media (max-width: 1199px) and (min-width: 768px) and (orientation: landscape) { .game-box { flex: 0 0 260px; height: 175px; } }
         @media (max-width: 2000px) and (orientation: landscape) { .game-grid { gap: 25px; padding: 15px 5px; } .game-box { flex: 0 0 220px; height: 140px; } }
         @media (hover: none) and (pointer: coarse) { * { touch-action: manipulation !important; } }
+   
+    /* 🔥 MOBILE LANDSCAPE FIXES (Paste at the bottom of CSS) */
+        @media (max-height: 500px) and (orientation: landscape) {
+            /* Container Adjustments */
+            .container { padding: 5px; }
+            .title { font-size: 18px !important; top: 5px; margin-bottom: 5px; }
+            
+            /* Modal Size Fix */
+            .modal-content { 
+                padding: 10px 15px; 
+                max-height: 95vh; /* Screen se bahar nahi jayega */
+                max-width: 450px;
+                display: flex;
+                flex-direction: column;
+            }
+            
+            /* Scrollable Body */
+            .modal-body { 
+                overflow-y: auto; /* Scroll aa jayega agar content bada hua */
+                flex: 1;
+            }
+
+            /* Compact Elements */
+            .modal-header { font-size: 18px; margin-bottom: 5px; flex-shrink: 0; }
+            .setup-section-title { margin: 5px 0; font-size: 0.8rem; }
+            .option-row { margin-bottom: 5px; gap: 8px; }
+            .option-card { padding: 5px; }
+            .opt-icon { font-size: 1.2rem; margin-bottom: 0; }
+            .opt-label { font-size: 0.8rem; }
+            .play-btn { padding: 8px; font-size: 1rem; margin-top: 8px; }
+        }
+    
     </style>
 </head>
 <body>
