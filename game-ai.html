@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta name="viewport" content="width=device-width, height=device-height initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta charset="UTF-8">
+<title>Trap The King</title>
+<link rel="stylesheet" href="style-ai.css">
+</head>
+<body>
+    <div class="game-container">
+    <div id="rotateWarning">
+ 🔄 Please rotate your phone
+</div>
+
+<div id="statusContainer" class="status-container">
+    <div class="status-row" style="border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 5px; margin-bottom: 5px;">
+        <span class="status-label">Turn:</span>
+        <span id="turnIndicator" class="status-value" style="color: #fbbf24;">Loading...</span>
+    </div>
+
+    <div class="status-row" style="border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 5px; margin-bottom: 5px;">
+        <span class="status-label">⏳ Moves:</span>
+        <span id="moveCount" class="status-value" style="color: cyan; font-size: 18px;">100</span>
+    </div>
+
+    <div class="status-row">
+        <span class="status-label">♟️ Pawns:</span>
+        <span id="pawnCount" class="status-value">20</span>
+    </div>
+
+    <div class="status-row">
+        <span class="status-label">👑 King1:</span>
+        <span id="king1Status" class="status-value">SAFE</span>
+    </div>
+    <div class="status-row">
+        <span class="status-label">👑 King2:</span>
+        <span id="king2Status" class="status-value">SAFE</span>
+    </div>
+</div>
+
+<div class="scene">
+    <div class="board">
+        <svg id="board" viewBox="-60 -60 575 575">
+            <!-- GRID (unchanged) -->
+            <!--Vertical Line-->
+            <g stroke="#0f1111" stroke-width="2.5" style="pointer-events: none;"></g>
+            <g stroke="#0f1111" stroke-width="2.5">
+                <line x1="0" y1="0" x2="0" y2="472"/>
+                <line x1="118" y1="0" x2="118" y2="472"/>
+                <line x1="236" y1="0" x2="236" y2="472"/>
+                <line x1="354" y1="0" x2="354" y2="472"/>
+                <line x1="472" y1="0" x2="472" y2="472"/>
+            <!--Vertical Line-->
+                <line x1="0" y1="0" x2="472" y2="0"/>
+                <line x1="0" y1="118" x2="472" y2="118"/>
+                <line x1="0" y1="236" x2="472" y2="236"/>
+                <line x1="0" y1="354" x2="472" y2="354"/>
+                <line x1="0" y1="472" x2="472" y2="472"/>
+                <!-- Diagonals Line -->
+                <line x1="0" y1="0" x2="472" y2="472"/>
+                <line x1="472" y1="0" x2="0" y2="472"/>
+                <line x1="236" y1="0" x2="0" y2="236"/>
+                <line x1="0" y1="236" x2="236" y2="472"/>
+                <line x1="236" y1="0" x2="472" y2="236"/>
+                <line x1="472" y1="236" x2="236" y2="472"/>
+            </g>
+            <g id="aiMoveGroup" style="pointer-events: none;"></g>
+
+            <g id="points"></g>
+
+            <g id="pieces" style="pointer-events: none;"></g>
+            
+        </svg>
+    </div>
+</div>
+
+
+
+<div class="controls">
+
+    <select id="aiDifficulty" class="ai-select">
+    <option value=1>Easy</option>
+    <option value=3 selected>Medium</option>
+    <option value=5>Hard</option>
+</select>
+<button id="aboutBtn">ℹ️ About</button>
+<button id="undoBtn">⟲ Undo</button>
+<button id="redoBtn">⟳ Redo</button>
+<button id="resetBtn">🔄 Reset</button>
+<button id="helperBtn">🎯 Helper</button>
+<button id="soundBtn">🔊Sound</button>
+</div>
+
+<!-- 🔥 ABOUT MODAL -->
+<div id="aboutModal" class="modal-overlay" style="display: none;">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h2>🎮 TRAP THE KING - Rules</h2>
+            <button id="closeModal" class="close-btn">✕</button>
+        </div>
+        <div class="modal-body">
+            <h3>🎯 Objective:</h3>
+            <p>• Trap both kings by blocking all moves OR</p>
+            <p>• Reduce pawns to ≤5 (King wins)</p>
+            
+            <h3>♟️ Pawn Rules:</h3>
+            <p>• Move 1 step to empty adjacent point</p>
+            <p>• Alternate turns with kings</p>
+            
+            <h3>👑 King Rules:</h3>
+            <p>• Move 1 step to empty adjacent point</p>
+            <p>• Jump over pawn to kill (2 steps)</p>
+            
+            <h3>🏆 Win Conditions:</h3>
+            <p>• <strong>PAWN WINS:</strong> Both kings blocked</p>
+            <p>• <strong>KING WINS:</strong> Pawns ≤5</p>
+            
+            <h3>🎮 Features:</h3>
+            <ul>
+                <li>✅ Undo/Redo</li>
+                <li>✅ Helper (valid moves highlight)</li>
+                <li>📊 Live status (Pawns + King status)</li>
+                <li>📱 Mobile vibration</li>
+            </ul>
+        </div>
+    </div>
+</div>
+</div>
+
+<div id="gameOverModal" class="modal-overlay" style="display: none;">
+    <div class="win-card">
+        <div class="win-icon" id="winIcon">🏆</div>
+        <h2 id="winTitle">GAME OVER</h2>
+        <p id="winMessage">King Wins the game!</p>
+        
+        <div class="win-buttons">
+            <button onclick="location.reload()" class="restart-btn">🔄 Play Again</button>
+            <button onclick="window.location.href='index.html'" class="home-btn">🏠 Home</button>
+        </div>
+    </div>
+</div>
+
+<script src="script-ai.js"></script>
+</body>
+</html>
